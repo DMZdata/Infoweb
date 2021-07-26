@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head> 
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>DMZ.NO-InfoWeb</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="<?php echo base_url('/assets/vendors/iconfonts/mdi/css/materialdesignicons.min.css')?>">
+    <link rel="stylesheet" href="<?php echo base_url('/assets/vendors/iconfonts/ionicons/dist/css/ionicons.css')?>">
+    <link rel="stylesheet" href="<?php echo base_url('/assets/vendors/iconfonts/flag-icon-css/css/flag-icon.min.css')?>">
+    <link rel="stylesheet" href="<?php echo base_url('/assets/vendors/css/vendor.bundle.base.css')?>">
+    <link rel="stylesheet" href="<?php echo base_url('/assets/vendors/css/vendor.bundle.addons.css')?>">
+    <!-- endinject -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="<?php echo base_url('/assets/css/shared/style.css')?>">
+    <!--<link rel="shortcut icon" href="<?php echo base_url('/assets/images/favicon.ico')?>" />-->
+    <!-- toastr css -->
+    <link rel="stylesheet" href="<?php echo base_url('/assets/css/shared/toastr.css')?>">
+    <!-- font awsome -->
+    <link rel="stylesheet" href="<?php echo base_url('assets/vendors/iconfonts/font-awesome/css/font-awesome.min.css')?>" />
+    <style type="text/css">
+      .title{
+        color: #fff;
+      }
+      #pageloader
+      {
+        background: rgba( 255, 255, 255, 0.4 );
+        display: none;
+        height: 100%;
+        position: fixed;
+        width: 100%;
+        z-index: 9999;
+      }
+
+      #pageloader img
+      {
+        left: 50%;
+        margin-left: -32px;
+        margin-top: -32px;
+        position: absolute;
+        top: 50%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="pageloader">
+       <img src="http://cdnjs.cloudflare.com/ajax/libs/semantic-ui/0.16.1/images/loader-large.gif" alt="processing..." />
+    </div>
+    <div class="container-scroller">
+      <div class="container-fluid page-body-wrapper full-page-wrapper">
+        <div class="content-wrapper d-flex align-items-center auth auth-bg-1 theme-one">
+          <div class="w-100">
+            <div class="col-lg-4 col-sm-12 col-md-6 mx-auto">
+              <h3 class="title text-center mb-4">Login</h3>
+              <div class="auto-form-wrapper">
+                <form action="<?php echo base_url('login/user_login') ?>" method="post" id="login_form">
+                  <div class="form-group">
+                    <label class="label">Email/Username *</label>
+                    <div class="input-group">
+                      <input type="text" name="email" class="form-control" placeholder="Username or Email" autocomplete="off">
+                      <div class="input-group-append">
+                        <span class="input-group-text">
+                          <i class="mdi mdi-check-circle-outline"></i>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="label">Password *</label>
+                    <div class="input-group">
+                      <input type="password" name="password" class="form-control" id="password" placeholder="*********" autocomplete="off">
+                      <div class="input-group-append">
+                        <span class="input-group-text">
+                          <span toggle="#password" class="fa fa-fw field-icon toggle-password fa-eye"></span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <button type="submit" class="btn btn-primary submit-btn btn-block">Login</button>
+                  </div>
+                  <div class="text-block text-center my-3">
+                    <a href="<?php echo base_url('/login/forgot_password')?>" class="text-black text-small">Forgot Password</a>
+                  </div>
+                  <div class="text-block text-center my-3">
+                    <span class="text-small font-weight-semibold">Not a member ?</span>
+                    <a href="<?php echo base_url('/register')?>" class="text-black text-small">Create new account</a>
+                  </div>
+                </form>
+              </div>
+              <ul class="auth-footer">
+                <li>
+                  <a href="#">Conditions</a>
+                </li>
+                <li>
+                  <a href="#">Help</a>
+                </li>
+                <li>
+                  <a href="#">Terms</a>
+                </li>
+              </ul>
+              <p class="footer-text text-center"><span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © 2020 <a href="dmz.no" target="_blank">dmz.no</a>. All rights reserved.</span></p>
+            </div>
+          </div>
+        </div>
+        <!-- content-wrapper ends -->
+      </div>
+      <!-- page-body-wrapper ends -->
+    </div>
+<!-- container-scroller -->
+   
+<!--toastr js  -->
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="<?php //echo base_url('assets/js/shared/jquery-1.12.2.min.js')?>"></script>
+<script src="<?php echo base_url('/assets/js/shared/toastr.js') ?>"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/jquery.validate.min.js"></script>
+<script type="text/javascript">
+$(function() {
+  $("#login_form").validate({
+    rules: {
+      email: {
+        required: true
+      },
+      password: "required"
+    },
+    messages: {
+     email: "Please enter a valid email or username.",
+      password: "Please enter your password",
+    },
+    errorPlacement: function (error, element) {
+      error.insertAfter($(element).parents('.input-group'));  
+    },
+    submitHandler: function(form) {
+      var formdata = $(form).serialize();
+      var action = $(form).attr('action');
+      $("#pageloader").fadeIn();
+      $.ajax({
+        url:action,
+        type:'POST',
+        dataType: "JSON",
+        data:formdata,
+        success:function(data)
+        {
+          if(data.status)
+          {
+             toastr.success(data.message);
+             setTimeout(function(){location.href=data.redirect; },3000);
+          }
+          else{
+            toastr.error(data.message);
+            $("#pageloader").fadeOut();
+          }
+        }
+      })
+    }
+  });
+});
+//Password hide/show
+$(".toggle-password").click(function() {
+  $(this).toggleClass("fa-eye fa-eye-slash");
+  var input = $($(this).attr("toggle"));
+  if (input.attr("type") == "password") {
+    input.attr("type", "text");
+  } else {
+    input.attr("type", "password");
+  }
+});
+</script>
+  </body>
+</html>
+    
